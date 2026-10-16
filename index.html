@@ -1,10 +1,203 @@
 <!DOCTYPE html>
-<html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Yeji Kim, Portfolio">
+<title>Yeji Kim</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Karla:ital,wght@0,400;0,700;1,400&display=swap">
+<style>
+/* Layout nach dem Vorbild kangjeo.com: kleiner Name oben, ein Menüpunkt, Startseite nur aus Bildern, eins pro Zeile,
+   jedes Projekt eine eigene Seite mit Text und zeilenweisen Bildunterschriften, "über" als schlichte Seite. */
+:root {
+  --bg: #ffffff;
+  --fg: #1d1d1f;
+  --muted: #76767c;
+  --line: #e6e6e9;
+  --tile: #f2f2f4;
+  --f-body: "Karla", "Helvetica Neue", Arial, sans-serif;
+  --wrap: 1100px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) { --bg: #141416; --fg: #e8e8ea; --muted: #9a9aa2; --line: #2a2a2f; --tile: #1e1e22; color-scheme: dark; }
+}
+:root[data-theme="dark"] { --bg: #141416; --fg: #e8e8ea; --muted: #9a9aa2; --line: #2a2a2f; --tile: #1e1e22; color-scheme: dark; }
+* { box-sizing: border-box; }
+body { margin: 0; }
+[hidden] { display: none !important; }
+body { background: var(--bg); color: var(--fg); font-family: var(--f-body); font-size: 15px; line-height: 1.6; }
+a { color: inherit; text-decoration: none; }
+a:hover { text-decoration: underline; text-underline-offset: 3px; }
+a:focus-visible { outline: 2px solid var(--fg); outline-offset: 3px; }
+.wrap { max-width: var(--wrap); margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+
+header .wrap { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; flex-wrap: wrap; padding-block: 36px 44px; }
+header h1 { margin: 0; font-size: 18px; font-weight: 700; letter-spacing: 0.01em; }
+header nav { display: flex; gap: 20px; }
+
+/* Startseite: nur Bilder */
+.thumbs { display: grid; grid-template-columns: minmax(0, 1fr); gap: 48px; max-width: 1024px; padding-bottom: 64px; }
+.thumbs a { display: block; position: relative; }
+.thumbs a:hover { text-decoration: none; }
+.thumbs img { display: block; width: 100%; max-width: 100%; height: auto; background: var(--tile); }
+.thumbs .t-title { position: absolute; left: 0; right: 0; bottom: 0; padding: 8px 10px; background: var(--bg); font-size: 13px; line-height: 1.35; opacity: 0; transition: opacity .2s; }
+.thumbs a:hover .t-title, .thumbs a:focus-visible .t-title { opacity: 1; }
+
+/* Projektseite */
+.project { display: grid; gap: 56px; padding-bottom: 72px; }
+.intro { max-width: 640px; }
+.intro h2 { font-size: 15px; font-weight: 700; margin: 0 0 14px; }
+.intro p { margin: 0 0 12px; }
+.piece { display: grid; grid-template-columns: minmax(0, 260px) minmax(0, 1fr); gap: 24px 48px; scroll-margin-top: 24px; }
+.caption { margin: 0; }
+.images { display: grid; gap: 20px; min-width: 0; }
+.images img { display: block; width: 100%; max-width: 100%; height: auto; background: var(--tile); }
+
+/* über */
+.about { max-width: 640px; padding-bottom: 72px; }
+.about p { margin: 0 0 22px; }
+.about .todo { color: var(--muted); font-style: italic; }
+
+footer .wrap { padding-block: 28px 40px; font-size: 12px; color: var(--muted); }
+footer .wrap::before { content: ""; display: block; border-top: 1px solid var(--line); margin-bottom: 28px; }
+
+@media (max-width: 640px) {
+  .thumbs { gap: 28px; }
+  .piece { grid-template-columns: 1fr; }
+  header .wrap { padding-block: 24px 28px; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+</head>
 <body>
+<header>
+  <div class="wrap">
+    <h1><a href="#start">Yeji Kim</a></h1>
+    <nav aria-label="Menü">
+      <a href="#ueber">über</a>
+    </nav>
+  </div>
+</header>
 
-<h1>My First Heading</h1>
+<main class="wrap">
+  <div id="v-start">
+    <div class="thumbs" id="thumbs"></div>
+  </div>
 
-<p>My first paragraph.</p>
+  <div id="v-projekt" hidden>
+    <div class="project" id="project"></div>
+  </div>
 
+  <div class="about" id="v-ueber" hidden>
+    <p><strong>Yeji Kim</strong><br>Südkorea / Deutschland</p>
+    <p>Yeji Kim arbeitet mit Alltagsmaterialien wie Kassenbons, Seife, Snacktüten und Ramyeon. In ihren Arbeiten geht es um das Ankommen in Deutschland, um Rassismus, um Körperbilder und um Identität.</p>
+    <p class="todo">Lebenslauf, Ausstellungen und Kontakt folgen.</p>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">Copyright 2023. Yeji Kim. Alle Bilder und Texte dürfen nicht ohne Erlaubnis kopiert werden.</div>
+</footer>
+
+<script>
+(function () {
+  var B = "bilder/";
+  // Projekte aus der Mappe "Yeji Kim_Portfolio.pdf". Jede Arbeit: Bildunterschrift Zeile für Zeile, Seiten der Mappe als Bilder.
+  var projects = [
+    { id: "selbstreflexion", title: "Selbstreflexion",
+      text: [
+        "Ich habe die Quittungen gesammelt, die ich in dem Jahr, seit ich nach Deutschland gekommen bin, ausgegeben habe. Meine Quittungen enthalten alle meine Misserfolge und meine Gier. Also habe ich sie zur Selbstreflexion genutzt.",
+        "Als Erstes habe ich die Quittungen für jeden Monat, in dem ich zu viel ausgegeben habe, gesammelt, aufgeschrieben, warum ich glaube, dass der Artikel ein Fehlkauf war, und die Quittung durchgestrichen.",
+        "Ich habe die Quittungen jedes Monats, in dem ich zu viel ausgegeben habe, beiseite gelegt und daraus einen Origami-Stern gebastelt. Ich habe damit einen Steinturm gebaut und mit Perlen gebetet, als eine Form der Selbstreflexion.",
+        "Außerdem habe ich die Quittungen von 12 Monaten auf einen Paketkarton geklebt, eines der Produkte meiner Ausgaben. Und das Ergebnis ist, mich unsichtbar zu machen."
+      ],
+      works: [
+        { id: "selbstreflexion-quittungen", lines: ["Selbstreflexion", "Auf dem iPad gezeichnete Quittungen", "2023"], pages: [1] },
+        { id: "selbstreflexion-folie", lines: ["Selbstreflexion", "Acrylfarbe auf transparenter Plastikfolie, 1800 × 2000 mm", "2023"], pages: [2] },
+        { id: "rosenkranz", lines: ["den Rosenkranz abbeten", "Film Capture (Origami-Stern als Quittung), 00:03:31", "2023"], pages: [3] },
+        { id: "box", lines: ["Box zur Selbstreflexion", "Origami-Stern als Quittung, Box, 12 Fäden, 380 × 450 mm", "2023"], pages: [4] },
+        { id: "sterntuerme", lines: ["Baue Sterntürme", "Origami-Stern als Quittung, 700 × 150 mm", "2023"], pages: [5] },
+        { id: "wish-liste", lines: ["Wish liste", "Pinsel aus Snacktüten, 380 × 360 mm;", "Acrylfarbe auf Papier (210 × 297 mm), Timelapse-Film, 00:01:19", "2023"], pages: [6, 7] }
+      ] },
+    { id: "kauen", title: "kauen",
+      text: [
+        "Als ich beschloss, nach Deutschland zu gehen, haben mich alle wegen des Rassismus aufgehalten. Ich treffe hier in Deutschland tatsächlich manchmal Leute, die rassistische Bemerkungen machen.",
+        "Ich habe noch nicht den Mut, mich zu wehren, also fluche ich nur innerlich. Durch meine Arbeit wollte ich ihre Beleidigungen zurückgeben und gleichzeitig ihre Worte zum Schweigen bringen.",
+        "Die rassistischen Äußerungen, die hier und da gepostet wurden, fügen sich unauffällig in das Straßenbild ein. Ist es in Ordnung zu fluchen, wenn die Betrachter*innen nicht wissen, ob es ein Fluch ist?"
+      ],
+      works: [
+        { id: "kauen-objekte", lines: ["kauen", "Mixed Media (Spiegel, Servietten, Watte), (265 × 205 mm) × 4", "2022"], pages: [9, 10, 11] },
+        { id: "ignorieren", lines: ["kauen, Herstellung von Aufklebern / ignorieren", "Collage mit Photoshop", "2022"], pages: [12] },
+        { id: "zersetzen", lines: ["zersetzen", "Buntstift auf Papier, 420 × 297 mm", "2022"], pages: [13] },
+        { id: "raten-sie-einmal", lines: ["raten Sie einmal", "Buntstift auf Papier, (210 × 90 mm) × 6", "2022"], pages: [14] }
+      ] },
+    { id: "nomale", title: "Nomale",
+      text: [
+        "Seit ich ein Kind war, habe ich mich für die Form meiner Brüste interessiert. Denn die Form der Brüste, die in den Medien gezeigt wurden, unterschied sich deutlich von meiner. Also habe ich mir immer wieder vorgestellt, wie meine Brust in dem BH zerdrückt wird, um als „normale Brustform“ zu erscheinen.",
+        "Als ich erwachsen wurde und meine Freunde kennenlernte und damit vertraut wurde, mich mit ihnen gemeinsam auszuziehen, wurde mir klar, dass die Brüste von Frauen alle unterschiedlich sein können.",
+        "Wie schön wäre es gewesen, wenn ich schon als Kind gewusst hätte, dass es so etwas wie eine „normale Brustform“ nicht gibt. Ich frage mich, ob meine Mutter sich auch über „normale Brustformen“ Gedanken gemacht hat? Und denkt immer noch, dass es so etwas gibt?"
+      ],
+      works: [
+        { id: "in-bh-2023", lines: ["In BH", "Mehl in Luftballons, (60 × 60, 40 × 50, 50 × 57, 35 × 60, 55 × 50 mm) × 2", "2023"], pages: [16] },
+        { id: "in-bh-2022", lines: ["In BH", "Acrylfarbe auf Ton, (60 × 32 mm) × 5", "2022"], pages: [17] },
+        { id: "freundinnen", lines: ["Freundinnen", "Farbe in Seife, 50 × 60, 50 × 45, 50 × 52 mm", "2022"], pages: [18] },
+        { id: "meine-brust", lines: ["Meine Brust", "Farbe in Seife, 105 × 130 mm", "2023"], pages: [19] },
+        { id: "normale-brustform", lines: ["Gibt es eine normale Brustform?", "Interviewskript mit 4 Frauen", "2022"], pages: [20] },
+        { id: "nomale-film", lines: ["Nomale", "Film Capture (Stop-Motion), 00:03:29", "2023"], pages: [21] },
+        { id: "kennenlernen", lines: ["kennenlernen", "Stoff, Styropor, 520 × 700 mm", "2023"], pages: [22] }
+      ] },
+    { id: "ramyeon", title: "Ramyeon (Ich bin)",
+      text: [
+        "Die Ramyeon (Ramen)-Tüten, aus denen das Hangeul herausgeschnitten wurde, fühlten sich an wie ich, die in Deutschland nur als eine Asiatin wahrgenommen wird. Ich habe den Prozess der Einwanderung nach Deutschland, in dem meine Identität als Koreanerin verschwindet, so zum Ausdruck gebracht, indem ich Hangeul als deutsches Alphabet benutze und mich auf Deutsch vorstelle.",
+        "Egal in welches Restaurant ich gehe, ich entscheide mich immer für ein scharfes Gericht. Aber in Deutschland sind mir scharfe Speisen nicht scharf genug. Ich kann also nicht aufhören, koreanisches Essen zu essen.",
+        "Ich habe eine Geschichte über mich geschrieben, in der ich Ramyeon-Nudeln verwende, das koreanische Gericht, das ich am häufigsten esse."
+      ],
+      works: [
+        { id: "ich-bin", lines: ["Ich bin", "Ramyeon-Tüten, 297 × 210 mm", "2022"], pages: [24] },
+        { id: "ich-bin-jetzt-scharf", lines: ["Ich bin jetzt scharf", "Film Capture (Verwendung von Ramyeon), 00:05:00", "2022"], pages: [25] },
+        { id: "ramyeon-font", lines: ["Ramyeon Font", "Bearbeitung nach dem Fotografieren", "2022"], pages: [26] },
+        { id: "scharfes-essen", lines: ["Ich esse oft scharfes Essen", "Illustrator", "2022"], pages: [27] },
+        { id: "scharfe-ramyeon", lines: ["Ich bin Scharfe Ramyeon", "Illustrator und Photoshop", "2023"], pages: [28] }
+      ] }
+  ];
+
+  function pad(n) { return (n < 10 ? "0" : "") + n; }
+  function esc(s) { return s.replace(/&/g, "&amp;").replace(/</g, "&lt;"); }
+
+  var thumbs = [];
+  projects.forEach(function (p) { p.works.forEach(function (w) { thumbs.push({ w: w, p: p }); }); });
+  document.getElementById("thumbs").innerHTML = thumbs.map(function (t) {
+    return '<a href="#' + t.w.id + '"><img src="' + B + 'seite-' + pad(t.w.pages[0]) + '.jpg" alt="' + esc(t.w.lines[0]) + '" loading="lazy"><span class="t-title">' + esc(t.w.lines[0]) + '</span></a>';
+  }).join("");
+
+  function renderProject(p) {
+    var html = '<div class="intro"><h2>' + esc(p.title) + '</h2>' + p.text.map(function (t) { return '<p>' + esc(t) + '</p>'; }).join("") + '</div>';
+    html += p.works.map(function (w) {
+      var cap = w.lines.map(function (l, i) { return i === 0 ? '&lt;' + esc(l) + '&gt;' : esc(l) + (i < w.lines.length - 1 ? (/;$/.test(l) ? '' : ',') : '.'); }).join("<br>");
+      var imgs = w.pages.map(function (n) { return '<img src="' + B + 'seite-' + pad(n) + '.jpg" alt="' + esc(w.lines[0]) + '" loading="lazy">'; }).join("");
+      return '<div class="piece" id="w-' + w.id + '"><p class="caption">' + cap + '</p><div class="images">' + imgs + '</div></div>';
+    }).join("");
+    document.getElementById("project").innerHTML = html;
+  }
+
+  function route() {
+    var h = (location.hash || "").slice(1), proj = null, work = null;
+    projects.forEach(function (p) {
+      if (p.id === h) proj = p;
+      p.works.forEach(function (w) { if (w.id === h) { proj = p; work = w; } });
+    });
+    var view = h === "ueber" ? "ueber" : (proj ? "projekt" : "start");
+    if (proj) renderProject(proj);
+    ["start", "projekt", "ueber"].forEach(function (v) { document.getElementById("v-" + v).hidden = v !== view; });
+    var target = work && document.getElementById("w-" + work.id);
+    if (target && work !== proj.works[0]) target.scrollIntoView(); else window.scrollTo(0, 0);
+  }
+  window.addEventListener("hashchange", route);
+  route();
+})();
+</script>
 </body>
 </html>
